@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>DNS Checker</title>
+    <link href="static/index.css" rel="stylesheet" media="all" />
+  </head>
+  <body>
+    <header>
+      <h1>DNS Checker</h1>
+    </header>
+    <div class="contents">
+      <nav class="networknav">
+        <ul>
+          <!-- <li><a href="a.html">正引きの表</a></li> -->
+          <li><a href="10.226.141.0.html">10.226.141.0/24</a></li>
+          <li><a href="10.226.142.0.html">10.226.142.0/24</a></li>
+          <li><a href="10.226.165.0.html">10.226.165.0/24</a></li>
+        </ul>
+      </nav>
+      <section id="warningsection">
+        {% if a_overlaped %}
+        <h1 class="warning">次のA レコードは重複しています。</h1>
+        <table class="a_overlaped">
+          <tr>
+            <th>hostname</th>
+            <th>ip</th>
+          </tr>
+          {% for key, val in a_overlaped %}
+          <tr>
+            <td>{{ key }}</td>
+            <td>{{ val|join(', ') }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+        {% endif %}
+        {% if a_only %}
+        <h1 class="warning">次のA レコードは正引きに対して逆引きが存在していません。</h1>
+        <table class="a_only">
+          <tr>
+            <th>hostname</th>
+            <th>ip</th>
+          </tr>
+          {% for a_record in a_only %}
+          <tr>
+            <td>{{ a_record.hostname }}</td>
+            <td>{{ a_record.ip_address }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+        {% endif %}
+
+        {% if a_ptr_not_same %}
+        <h1 class="warning">次のA レコードは正引きした後に逆引きするとホスト名が一致しません。</h1>
+        <table class="a_not_same">
+          <tr>
+            <th colspan="2">正引き</th>
+            <th colspan="2">逆引き</th>
+          </tr>
+          <tr>
+            <th>hostname</th>
+            <th>ip</th>
+            <th>hostname</th>
+          </tr>
+          {% for hostname, ip, hostnames in a_ptr_not_same %}
+          <tr>
+            <td>{{ hostname }}</td>
+            <td>{{ ip }}</td>
+            <td>{{ hostnames|join(", ") }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+        {% endif %}
+        {% if ptr_overlaped %}
+        <h1 class="warning">次のPTR レコードは重複しています。</h1>
+        <table class="ptr_overlaped">
+          <tr>
+            <th>hostname</th>
+            <th>ip</th>
+          </tr>
+          {% for key, val in ptr_overlaped %}
+          <tr>
+            <td>{{ key }}</td>
+            <td>{{ val|join(', ') }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+        {% endif %}
+        {% if ptr_only %}
+        <h1 class="warning">次のPTR レコードは逆引き引きに対して正引きが存在していません。</h1>
+        <table class="ptr_only">
+          <tr>
+            <th>ip</th>
+            <th>hostname</th>
+          </tr>
+          {% for ptr_record in ptr_only %}
+          <tr>
+            <td>{{ ptr_record.ip_address }}</td>
+            <td>{{ ptr_record.hostname }} </td>
+          </tr>
+          {% endfor %}
+        </table>
+        {% endif %}
+        {% if ptr_a_not_same %}
+        <h1 class="warning">次のPTR レコードは逆引きした後に正引き引きをすると IP アドレスが一致しません。</h1>
+        <table class="ptr_not_same">
+          <tr>
+            <th colspan="2">逆引き</th>
+            <th colspan="2">正引き</th>
+          </tr>
+          <tr>
+            <th>ip</th>
+            <th>hostname</th>
+            <th>ip</th>
+          </tr>
+          {% for ip, hostname, ips in ptr_a_not_same %}
+          <tr>
+            <td>{{ ip }}</td>
+            <td>{{ hostname }}</td>
+            <td>{{ ips|join(", ") }}</td>
+          </tr>
+        {% endfor %}
+        </table>
+        {% endif %}
+      </section>
+    </div>
+  </body>
+</html>
+

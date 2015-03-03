@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>数学教室のIP 一覧</title>
+    <link href="static/a_ptr.css" rel="stylesheet" media="all" />
+  </head>
+  <body>
+    <section class="recordtables">
+      <table class="arecord">
+        <caption >正引き逆引き</caption>
+        <tr>
+          <th colspan="1">IP</th>
+          <th colspan="1">A</th>
+          <th colspan="1">PTR</th>
+        </tr>
+        <tr>
+          <th></th>
+          <th>hostname</th>
+          <th>hostname</th>
+        </tr>
+        {% for ip_address, a_hostname, ptr_hostname in records %}
+        {% if a_hostname and ptr_hostname %}
+        <tr class="used">
+        {% elif (not a_hostname) and (not ptr_hostname) %}
+        <tr class="unused">
+        {% else %}
+        <tr class="error">
+        {% endif %}
+          <td>{{ ip_address }}</td>
+          <td>{{ a_hostname }}</td>
+          <td>{{ ptr_hostname }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </section>
+  </body>
+</html>
+

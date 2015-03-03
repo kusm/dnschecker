@@ -1,0 +1,45 @@
+table {
+    border-collapse: collapse;
+}
+
+.arecord {
+    margin-left: 20px;
+}
+.ptrrecord {
+    margin-left: 20px;
+}
+
+.recordtables {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-box;
+}
+
+th {
+    border: solid 2px grey;
+    background-color: orange;
+    padding: 2px;
+}
+td {
+    border: solid 2px grey;
+    padding: 4px;
+}
+tr.used {
+    color: blue;
+    font-weight: bold;
+}
+tr.unused {
+    color: grey;
+}
+tr.error {
+    background-color: red;
+    color: white;
+}
+/*
+tr:nth-child(odd) {
+    background-color: lemonchiffon;
+}
+tr:nth-child(even) {
+    background-color: greenyellow;
+}
+*/

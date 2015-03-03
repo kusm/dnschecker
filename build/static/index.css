@@ -1,0 +1,53 @@
+header h1 {
+    text-align: center;
+    color: orange;
+}
+
+.contents {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-box;
+}
+
+nav.networknav {
+    padding: 10px;
+    margin: 10px;
+    border-right-style: solid;
+    border-right-color: grey;
+    border-right-width: 2px;
+}
+
+.warningsection {
+    padding: 10px;
+    margin: 10px;
+}
+
+h1.warning {
+    color: red;
+    font-size: small;
+}
+
+.warning h1 {
+    color: red;
+}
+
+table.a_not_same {
+}
+table.a_only {
+}
+table.ptr_not_same {
+}
+table.ptr_only {
+}
+table {
+    border-collapse: collapse;
+}
+th {
+    border: solid 2px grey;
+    background-color: orange;
+    padding: 2px;
+}
+td {
+    border: solid 2px grey;
+    padding: 4px;
+}
