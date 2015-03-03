@@ -5,18 +5,18 @@ from network import Network
 from checker import Checker
 import jinja2
 import os
+import shutil
 
 
 class HTMLBuilder:
     def __init__(self):
+        self.template_dir = os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            "templates"
+        )
         # initializing jinja2
         self.env = jinja2.Environment(
-            loader=jinja2.FileSystemLoader(
-                os.path.join(
-                    os.path.abspath(os.path.dirname(__file__)),
-                    "templates"
-                )
-            )
+            loader=jinja2.FileSystemLoader(self.template_dir)
         )
 
     def render_index_html(
@@ -101,5 +101,16 @@ class HTMLBuilder:
         ip_network,
         html_dir: str
     ):
+        # create HTML files
         self.render_index_html(ip_network, html_dir)
         self.render_ip_host_html(ip_network, html_dir)
+
+        # copy CSS files to html_dir
+        shutil.copy(
+            os.path.join(self.template_dir, "static/a_ptr.css"),
+            html_dir
+        )
+        shutil.copy(
+            os.path.join(self.template_dir, "static/index.css"),
+            html_dir
+        )
