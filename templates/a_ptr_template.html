@@ -28,8 +28,16 @@
         <tr class="error">
         {% endif %}
           <td>{{ ip_address }}</td>
+          {% if a_hostname %}
           <td>{{ a_hostname }}</td>
+          {% else %}
+          <td></td>
+          {% endif %}
+          {% if ptr_hostname %}
           <td>{{ ptr_hostname }}</td>
+          {% else %}
+          <td></td>
+          {% endif %}
         </tr>
         {% endfor %}
       </table>
