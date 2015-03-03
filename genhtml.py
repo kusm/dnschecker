@@ -7,25 +7,22 @@ import jinja2
 import os
 
 
-def get_abs_path(path):
-    return os.path.join(
-        os.path.abspath(os.path.dirname(__file__)),
-        path
-    )
-
-
 class HTMLBuilder:
     def __init__(self):
         # initializing jinja2
         self.env = jinja2.Environment(
             loader=jinja2.FileSystemLoader(
-                get_abs_path("templates")
+                os.path.join(
+                    os.path.abspath(os.path.dirname(__file__)),
+                    "templates"
+                )
             )
         )
 
     def render_index_html(
         self,
-        ip_network: {str: Network}
+        ip_network: {str: Network},
+        html_dir: str
     ):
 
         a_duplicated, a_not_found, a_cor_error = [], [], []
@@ -46,7 +43,7 @@ class HTMLBuilder:
             ptr_cor_error.extend(list(_ptr_cor_error.items()))
 
         # index.html
-        index_path = get_abs_path('build/index.html')
+        index_path = os.path.join(html_dir, 'index.html')
         with open(index_path, 'w') as f:
             template = self.env.get_template(
                 'index_template.html'
@@ -82,11 +79,12 @@ class HTMLBuilder:
 
     def render_ip_host_html(
         self,
-        ip_network: {str: Network}
+        ip_network: {str: Network},
+        html_dir: str
     ):
         for network_address, network in ip_network.items():
             ip_address = network_address.split("/")[0]
-            html_path = get_abs_path('build/{}.html'.format(ip_address))
+            html_path = os.path.join(html_dir, '{}.html'.format(ip_address))
 
             with open(html_path, 'w') as f:
                 template = self.env.get_template(
@@ -100,7 +98,8 @@ class HTMLBuilder:
 
     def render(
         self,
-        ip_network
+        ip_network,
+        html_dir: str
     ):
-        self.render_index_html(ip_network)
-        self.render_ip_host_html(ip_network)
+        self.render_index_html(ip_network, html_dir)
+        self.render_ip_host_html(ip_network, html_dir)

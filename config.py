@@ -16,3 +16,6 @@ ptr_record_filename_networks = [
 # デフォルトではこのスクリプトファイルが存在する
 # ディレクトリにある zones/ 以下に配置する
 zone_dir = "zones"
+
+# 生成した HTML をおくディレクトリ
+html_dir = "build"

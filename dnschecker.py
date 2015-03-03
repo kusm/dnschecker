@@ -86,6 +86,14 @@ if __name__ == "__main__":
         ),
         help="zone directory"
     )
+    parser.add_argument(
+        "-d", "--html-dir",
+        type=str,
+        nargs="?",
+        default=os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            config.html_dir
+        ),
         help="zone directory"
     )
     parser.add_argument(
@@ -101,6 +109,7 @@ if __name__ == "__main__":
     )
     logger = getLogger(__file__)
     zone_dir = os.path.abspath(args.zone_dir)
+    html_dir = os.path.abspath(args.html_dir)
 
     # ゾーンファイルのパスを求める
     a_record_filenames = [
@@ -122,7 +131,7 @@ if __name__ == "__main__":
         # --html オプションが有効のとき
         # HTML を生成する
         builder = HTMLBuilder()
-        builder.render(network)
+        builder.render(network, html_dir)
     else:
         # --html オプションが無効のとき
         # ゾーンファイルをチェックして結果を標準出力にだす
