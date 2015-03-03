@@ -77,10 +77,15 @@ if __name__ == "__main__":
         help="show DEBUG log"
     )
     parser.add_argument(
-        "-d", "--dir",
+        "-z", "--zone-dir",
         type=str,
         nargs="?",
-        default=config.basedir,
+        default=os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            config.zone_dir
+        ),
+        help="zone directory"
+    )
         help="zone directory"
     )
     parser.add_argument(
@@ -95,14 +100,15 @@ if __name__ == "__main__":
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     )
     logger = getLogger(__file__)
+    zone_dir = os.path.abspath(args.zone_dir)
 
     # ゾーンファイルのパスを求める
     a_record_filenames = [
-        os.path.join(args.dir, filename)
+        os.path.join(zone_dir, filename)
         for filename in config.a_record_filenames
     ]
     ptr_record_filename_networks = [
-        (os.path.join(args.dir, filename), ip_network)
+        (os.path.join(zone_dir, filename), ip_network)
         for filename, ip_network in config.ptr_record_filename_networks
     ]
 

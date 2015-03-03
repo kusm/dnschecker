@@ -1,8 +1,6 @@
 #! /usr/bin/env python
 # coding:utf-8
 
-import os
-
 # A レコードのゾーンファイル名
 a_record_filenames = [
     "math.kyoto-u.ac.jp.zone",
@@ -17,7 +15,4 @@ ptr_record_filename_networks = [
 # レコードファイルがあるディレクトリ
 # デフォルトではこのスクリプトファイルが存在する
 # ディレクトリにある zones/ 以下に配置する
-basedir = os.path.join(
-    os.path.abspath(os.path.dirname(__file__)),
-    "zones"
-)
+zone_dir = "zones"
