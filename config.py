@@ -3,11 +3,11 @@
 
 import os
 
-# A レコードの名前
+# A レコードのゾーンファイル名
 a_record_filenames = [
     "math.kyoto-u.ac.jp.zone",
 ]
-# PTR レコードの名前とそのネットワーク
+# PTR レコードのゾーンファイル名そのネットワーク
 ptr_record_filename_networks = [
     ('10.226.141.rev', '10.226.141.0/24'),
     ('10.226.142.rev', '10.226.142.0/24'),
