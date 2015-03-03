@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # coding:utf-8
 
-
 from network import Network, NetworkRangeError
 from checker import Checker
 from genhtml import HTMLBuilder
