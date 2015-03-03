@@ -77,10 +77,23 @@ if __name__ == "__main__":
         help="show DEBUG log"
     )
     parser.add_argument(
-        "-d", "--dir",
+        "-z", "--zone-dir",
         type=str,
         nargs="?",
-        default=config.basedir,
+        default=os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            config.zone_dir
+        ),
+        help="zone directory"
+    )
+    parser.add_argument(
+        "-d", "--html-dir",
+        type=str,
+        nargs="?",
+        default=os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            config.html_dir
+        ),
         help="zone directory"
     )
     parser.add_argument(
@@ -95,14 +108,16 @@ if __name__ == "__main__":
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     )
     logger = getLogger(__file__)
+    zone_dir = os.path.abspath(args.zone_dir)
+    html_dir = os.path.abspath(args.html_dir)
 
     # ゾーンファイルのパスを求める
     a_record_filenames = [
-        os.path.join(args.dir, filename)
+        os.path.join(zone_dir, filename)
         for filename in config.a_record_filenames
     ]
     ptr_record_filename_networks = [
-        (os.path.join(args.dir, filename), ip_network)
+        (os.path.join(zone_dir, filename), ip_network)
         for filename, ip_network in config.ptr_record_filename_networks
     ]
 
@@ -116,7 +131,7 @@ if __name__ == "__main__":
         # --html オプションが有効のとき
         # HTML を生成する
         builder = HTMLBuilder()
-        builder.render(network)
+        builder.render(network, html_dir)
     else:
         # --html オプションが無効のとき
         # ゾーンファイルをチェックして結果を標準出力にだす
