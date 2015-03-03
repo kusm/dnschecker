@@ -4,12 +4,13 @@
 from network import Network, NetworkRangeError
 from checker import Checker
 from genhtml import HTMLBuilder
-from parser import RecordParser
+from parser import RecordParser, RecordInfoParser
 
 
-def make_network(
+def make_ip_network(
     a_record_filenames: [str],
     ptr_record_filename_networks: [str],
+    record_info_filenames: [str]
 ) -> {str: Network}:
     """
     ゾーンファイルから Network インスタンスを生成する
@@ -45,6 +46,17 @@ def make_network(
                 network[network_address].add_record(ptr_record)
             except NetworkRangeError:
                 pass
+
+    # レコード情報を解析する
+    record_info_parser = RecordInfoParser()
+    for filename in record_info_filenames:
+        for record_info in record_info_parser.parse_file(filename):
+            for nt in network.values():
+                try:
+                    nt.add_record_info(record_info)
+                except NetworkRangeError:
+                    pass
+
     return network
 
 
@@ -97,6 +109,16 @@ if __name__ == "__main__":
         help="zone directory"
     )
     parser.add_argument(
+        "-r", "--record-info-dir",
+        type=str,
+        nargs="?",
+        default=os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            config.record_info_dir
+        ),
+        help="zone directory"
+    )
+    parser.add_argument(
         "--html",
         action="store_true",
         help="generate html"
@@ -110,6 +132,7 @@ if __name__ == "__main__":
     logger = getLogger(__file__)
     zone_dir = os.path.abspath(args.zone_dir)
     html_dir = os.path.abspath(args.html_dir)
+    record_info_dir = os.path.abspath(args.record_info_dir)
 
     # ゾーンファイルのパスを求める
     a_record_filenames = [
@@ -120,11 +143,16 @@ if __name__ == "__main__":
         (os.path.join(zone_dir, filename), ip_network)
         for filename, ip_network in config.ptr_record_filename_networks
     ]
+    record_info_filenames = [
+        os.path.join(record_info_dir, filename)
+        for filename in config.record_info_filenames
+    ]
 
     # ネットワークを定義する
-    network = make_network(
+    network = make_ip_network(
         a_record_filenames,
-        ptr_record_filename_networks
+        ptr_record_filename_networks,
+        record_info_filenames
     )
 
     if args.html:
