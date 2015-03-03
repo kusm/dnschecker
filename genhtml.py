@@ -23,7 +23,7 @@ class HTMLBuilder:
             )
         )
 
-    def index_render(
+    def render_index_html(
         self,
         ip_network: {str: Network}
     ):
@@ -80,7 +80,7 @@ class HTMLBuilder:
             f.write(html)
             print("making {} ... done".format(index_path))
 
-    def ip_host_render(
+    def render_ip_host_html(
         self,
         ip_network: {str: Network}
     ):
@@ -102,5 +102,5 @@ class HTMLBuilder:
         self,
         ip_network
     ):
-        self.index_render(ip_network)
-        self.ip_host_render(ip_network)
+        self.render_index_html(ip_network)
+        self.render_ip_host_html(ip_network)
