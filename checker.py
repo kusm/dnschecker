@@ -141,36 +141,36 @@ def test_network():
     # テストレコード
     #
     # A レコード           # PTR レコード
-    # hoge    192.168.0.1
-    #                      192.168.0.2  fuga
+    # chiya    192.168.0.1
+    #                      192.168.0.2  chino
     # syaro   192.168.0.3  192.168.0.3  syaro
     # syaro   192.168.0.4  192.168.0.4  syaro
     # rize    192.168.0.4  192.168.0.4  rize
 
-    a_hoge = ARecord("hoge", "192.168.0.1")
+    a_chiya = ARecord("chiya", "192.168.0.1")
     a_syaro1 = ARecord("syaro", "192.168.0.3")
     a_syaro2 = ARecord("syaro", "192.168.0.4")
     a_rize = ARecord("rize", "192.168.0.4")
-    ptr_fuga = PTRRecord("fuga", "192.168.0.2")
+    ptr_chino = PTRRecord("chino", "192.168.0.2")
     ptr_syaro1 = PTRRecord("syaro", "192.168.0.3")
     ptr_syaro2 = PTRRecord("syaro", "192.168.0.4")
     ptr_rize = PTRRecord("rize", "192.168.0.4")
 
     hosts = [
-        a_hoge, a_syaro1, a_syaro2, a_rize,
-        ptr_fuga, ptr_syaro1, ptr_syaro2, ptr_rize
+        a_chiya, a_syaro1, a_syaro2, a_rize,
+        ptr_chino, ptr_syaro1, ptr_syaro2, ptr_rize
     ]
 
     a2ptr_answer = (
         {"syaro": {a_syaro1, a_syaro2}},
-        [a_hoge],
+        [a_chiya],
         {a_syaro2: {ptr_syaro2, ptr_rize},
          a_rize: {ptr_syaro2, ptr_rize}}
     )
 
     ptr2a_answer = (
         {"192.168.0.4": {ptr_syaro2, ptr_rize}},
-        [ptr_fuga],
+        [ptr_chino],
         {ptr_syaro1: {a_syaro1, a_syaro2},
          ptr_syaro2: {a_syaro1, a_syaro2}}
     )
