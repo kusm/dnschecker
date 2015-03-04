@@ -13,9 +13,9 @@
       <nav class="networknav">
         <ul>
           <!-- <li><a href="a.html">正引きの表</a></li> -->
-          <li><a href="10.226.141.0.html">10.226.141.0/24</a></li>
-          <li><a href="10.226.142.0.html">10.226.142.0/24</a></li>
-          <li><a href="10.226.165.0.html">10.226.165.0/24</a></li>
+          {% for html_name, network_address in html_name_addresses %}
+          <li><a href="{{ html_name }}.html">{{ network_address }}</a></li>
+          {% endfor %}
         </ul>
       </nav>
       <section id="warningsection">

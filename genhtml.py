@@ -72,6 +72,10 @@ class HTMLBuilder:
                      [a_record.ip_address for a_record in a_records]
                      )
                     for ptr_record, a_records in ptr_cor_error
+                ],
+                html_name_addresses=[
+                    (network_address.split("/")[0], network_address)
+                    for network_address in ip_network.keys()
                 ]
             )
             f.write(html)
