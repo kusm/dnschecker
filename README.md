@@ -18,7 +18,7 @@ Python3 が必要です。HTML を生成するには
 スクリプトの説明
 -----------------
 
-dnschecker.py は A レコードと PTR レコードが対応しているかをチェックします。
+dnschecker は A レコードと PTR レコードが対応しているかをチェックします。
 もしも対応が正しくない場合には、対応していないレコード情報を標準出力
 にだします。
 
@@ -58,7 +58,8 @@ dnschecker を実行するには、はじめに `config.py` を編集し
 どのディレクトリの何という名前のゾーンファイルをチェックするか
 指定します。
 
-このテストでは以下のように設定しましょう。
+この例では以下のように設定しましょう。
+デフォルトではこの設定になっています。
 
     # レコードファイルがあるディレクトリ
     zone_dir = "testzones"
@@ -81,7 +82,7 @@ dnschecker を実行するには、はじめに `config.py` を編集し
         '192.168.0.info',
     ]
 
-この設定ができたら dnschecker を実行してレコードの整合性をチェックします。
+この設定ができたら `dnschecker.py` を実行してレコードの整合性をチェックします。
 
     $ python3 dnschecker.py
     cheking 192.168.0.0/24 network
@@ -124,8 +125,8 @@ dnschecker を実行するには、はじめに `config.py` を編集し
 DNS レコードのホスト名としては大文字小文字は区別されませんが、
 大文字小文字を一致させておく方がよいでしょう。
 
-この結果とレコード表を HTML に出力することもできます。
-はじめに config.py の `html_dir` を設定して
+結果とレコード表を HTML に出力することもできます。
+はじめに `config.py` の `html_dir` を設定して
 HTML を出力するディレクトリを設定します。
 
     # 生成した HTML をおくディレクトリ
@@ -135,7 +136,7 @@ HTML を出力するディレクトリを設定します。
 
     $ python3 dnschecker.py --html
 
-すると build ディレクトリ以下に index.html と 192.168.0.0.html という
+すると `build` ディレクトリ以下に `index.html` と `192.168.0.0.html` という
 HTML が生成されます。
 
 dnschecker の使い方
@@ -143,8 +144,7 @@ dnschecker の使い方
 
 `dnschecker.py` は次のように使用します。
 
-
-1.  config.py を設定する
+1.  config.py を設定する。
 
         # レコードファイルがあるディレクトリ
         # デフォルトではこのスクリプトファイルが存在する
@@ -191,12 +191,6 @@ dnschecker の使い方
         $ python3 dnschecker.py --html
 
     を実行する。この場合 `config.html_dir` 以下に HTML ファイルが生成される
-
-4.  レコードチェックの結果を HTML 出力をするには
-
-        $ python3 dnschecker.py --html
-
-    を実行する。すると `build/` 以下に HTML ファイルが生成される。
 
         build/
             192.168.0.0.html
