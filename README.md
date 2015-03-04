@@ -2,7 +2,6 @@ DNS Checker
 ==================
 
 DNS レコードが正しく設定されているかをチェックするスクリプトです。
-`/home/kusm/git_repos/dnschecker.git` においてあります。
 
 必要なもの
 -----------
