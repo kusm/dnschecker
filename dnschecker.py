@@ -106,7 +106,7 @@ if __name__ == "__main__":
             os.path.abspath(os.path.dirname(__file__)),
             config.html_dir
         ),
-        help="zone directory"
+        help="html directory"
     )
     parser.add_argument(
         "-r", "--record-info-dir",
@@ -116,7 +116,7 @@ if __name__ == "__main__":
             os.path.abspath(os.path.dirname(__file__)),
             config.record_info_dir
         ),
-        help="zone directory"
+        help="record info directory"
     )
     parser.add_argument(
         "--html",
