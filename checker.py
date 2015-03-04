@@ -2,6 +2,14 @@
 # coding:utf-8
 
 
+"""
+This module checks record consistency of a Network instance.
+
+:copyright: (c) 2015 by the KUSM Admin Team
+:license: MIT, see LICENSE for more details.
+"""
+
+
 from network import Network
 from record import DNSRecord, ARecord, PTRRecord
 

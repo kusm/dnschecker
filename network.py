@@ -2,6 +2,14 @@
 # coding:utf-8
 
 
+"""
+This module provides Network class.
+
+:copyright: (c) 2015 by the KUSM Admin Team
+:license: MIT, see LICENSE for more details.
+"""
+
+
 import ipaddress
 from record import DNSRecord, ARecord, PTRRecord, RecordInfo
 

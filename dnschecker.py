@@ -1,6 +1,14 @@
 #! /usr/bin/env python
 # coding:utf-8
 
+
+"""
+DNS Checker
+
+:copyright: (c) 2015 by the KUSM Admin Team
+:license: MIT, see LICENSE for more details.
+"""
+
 from network import Network, NetworkRangeError
 from checker import Checker
 from genhtml import HTMLBuilder

@@ -2,6 +2,14 @@
 # coding:utf-8
 
 
+"""
+This module provides Record classes.
+
+:copyright: (c) 2015 by the KUSM Admin Team
+:license: MIT, see LICENSE for more details.
+"""
+
+
 class DNSRecord:
     """
     ひとつの DNS レコードをあらわすクラス

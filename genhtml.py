@@ -1,6 +1,14 @@
 #! /usr/bin/env python
 # coding:utf-8
 
+
+"""
+This module generates HTML.
+
+:copyright: (c) 2015 by the KUSM Admin Team
+:license: MIT, see LICENSE for more details.
+"""
+
 from network import Network
 from checker import Checker
 import jinja2
