@@ -37,7 +37,7 @@ class DNSRecord:
         return hash((self.hostname, self.ip_address, self.type, self.used))
 
     def __str__(self):
-        print("{} {} {}".format(self.type, self.hostname, self.type))
+        print("{} {} {}".format(self.type, self.hostname, self.ip_address))
 
 
 class ARecord(DNSRecord):
