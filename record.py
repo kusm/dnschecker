@@ -37,7 +37,7 @@ class DNSRecord:
         return hash((self.hostname, self.ip_address, self.type, self.used))
 
     def __str__(self):
-        print("{} {} {}".format(self.type, self.hostname, self.type))
+        print("{} {} {}".format(self.type, self.hostname, self.ip_address))
 
 
 class ARecord(DNSRecord):
@@ -86,3 +86,47 @@ class PTRRecord(DNSRecord):
             "PTR",
             used
         )
+
+
+class RecordInfo:
+    def __init__(
+        self,
+        ip_address: str,
+        hostname: str,
+        classname: str,
+        room: str,
+        comment: str
+    ):
+        self.ip_address = ip_address
+        self.hostname = hostname
+        self.classname = classname
+        self.room = room
+        self.comment = comment
+
+    def __str__(self):
+        return "{}|{}|{}|{}|{}".format(
+            self.ip_address,
+            self.hostname,
+            self.classname,
+            self.room,
+            self.comment
+        )
+
+    def __eq__(self, other):
+        return self.ip_address == other.ip_address and \
+            self.hostname == other.hostname and \
+            self.classname == other.classname and \
+            self.room == other.room and \
+            self.comment == other.comment
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash((
+            self.ip_address,
+            self.hostname,
+            self.classname,
+            self.room,
+            self.comment
+        ))

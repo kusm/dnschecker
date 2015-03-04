@@ -3,7 +3,7 @@
 
 
 import ipaddress
-from record import DNSRecord, ARecord, PTRRecord
+from record import DNSRecord, ARecord, PTRRecord, RecordInfo
 
 
 class NetworkRangeError(Exception):
@@ -29,6 +29,8 @@ class Network:
         #    {"192.168.0.1": {record1, record2}, "192.168.0.2": {record3}, ...}
         # のように、IP アドレスをキー、対応するレコードの集合を値とする
         self.ptr_record = {}
+
+        self.record_info = {}
 
     def add_record(
         self,
@@ -70,6 +72,24 @@ class Network:
             # どちらでもない場合は ValueError をだす
             raise ValueError("record type is {}".format(type(record)))
 
+    def add_record_info(
+        self,
+        record_info: RecordInfo
+    ):
+        ip_address = record_info.ip_address
+        # レコードの IP アドレスがこのネットワークにはいっていない場合
+        # NetworkRangeError をだす
+        if ipaddress.ip_address(record_info.ip_address) \
+                not in self.network_address:
+            raise NetworkRangeError("{} not in {}".format(
+                ip_address, self.network_address
+            ))
+
+        if ip_address in self.record_info:
+            self.record_info[ip_address].add(record_info)
+        else:
+            self.record_info[ip_address] = {record_info}
+
     def is_ipaddress(self, name: str):
         """
         name が IP アドレスかどうかチェックする
@@ -92,10 +112,30 @@ class Network:
         else:
             return key in self.hostname_ip
 
+    def _pop_record_info(
+        self,
+        record_infos: {RecordInfo},
+        hostname: str,
+    ):
+        for record_info in record_infos:
+            if record_info.hostname == hostname:
+                return record_info, record_infos - {record_info}
+        return None, record_infos
+
     def __iter__(self):
         """
-        A レコードと PTR レコードから ip_address をキーとして
-        (ip_address, a_hostname, ptr_hostname) もリストを生成する
+        A レコードと PTR レコードとレコード情報から ip_address をキーとして
+
+            (ip_address,
+             a_hostname,
+             ptr_hostname,
+             reocrd_info.hostname,
+             record_info.classname,
+             reocrd_info.room,
+             record_info.comment
+             )
+
+        のリストを生成する
 
         例えば
 
@@ -109,13 +149,13 @@ class Network:
         というレコードがこの network にはいっているとき、
 
         >>> list(network)
-        [('192.168.0.1', 'hoge', None),
-         ('192.168.0.2', None, 'fuga'),
-         ('192.168.0.3', 'syaro', 'syaro'),
-         ('192.168.0.4', 'syaro', 'syaro'),
-         ('192.168.0.4', 'rize', 'rize'),
-         ('192.168.0.5', None, None),
-         ('192.168.0.6', None, None),
+        [('192.168.0.1', 'hoge', None, None, None, None, None),
+         ('192.168.0.2', None, 'fuga', None, None, None, None),
+         ('192.168.0.3', 'syaro', 'syaro', None, None, None, None),
+         ('192.168.0.4', 'syaro', 'syaro', None, None, None, None),
+         ('192.168.0.4', 'rize', 'rize', None, None, None, None),
+         ('192.168.0.5', None, None, None, None, None, None),
+         ('192.168.0.6', None, None, None, None, None, None),
           ...
         ]
 
@@ -141,16 +181,78 @@ class Network:
             only_a = a_set - ptr_set
             only_ptr = ptr_set - a_set
 
+            record_infos = self.record_info.get(ip, [])
+
             for hostname in a_and_ptr:
-                _ip_a_ptr_hosts.append((ip, hostname, hostname))
+                record_info, record_infos = self._pop_record_info(
+                    record_infos, hostname
+                )
+                if record_info:
+                    _ip_a_ptr_hosts.append(
+                        (ip, hostname, hostname,
+                         record_info.hostname,
+                         record_info.classname,
+                         record_info.room,
+                         record_info.comment
+                         )
+                    )
+                else:
+                    _ip_a_ptr_hosts.append(
+                        (ip, hostname, hostname,
+                         None, None, None, None)
+                    )
             for hostname in only_a:
-                _ip_a_ptr_hosts.append((ip, hostname, None))
+                record_info, record_infos = self._pop_record_info(
+                    record_infos, hostname
+                )
+                if record_info:
+                    _ip_a_ptr_hosts.append(
+                        (ip, hostname, None,
+                         record_info.hostname,
+                         record_info.classname,
+                         record_info.room,
+                         record_info.comment
+                         )
+                    )
+                else:
+                    _ip_a_ptr_hosts.append(
+                        (ip, hostname, None,
+                         None, None, None, None)
+                    )
             for hostname in only_ptr:
-                _ip_a_ptr_hosts.append((ip, None, hostname))
+                record_info, record_infos = self._pop_record_info(
+                    record_infos, hostname
+                )
+                if record_info:
+                    _ip_a_ptr_hosts.append(
+                        (ip, None, hostname,
+                         record_info.hostname,
+                         record_info.classname,
+                         record_info.room,
+                         record_info.comment
+                         )
+                    )
+                else:
+                    _ip_a_ptr_hosts.append(
+                        (ip, None, hostname,
+                         None, None, None, None)
+                    )
+
+            for record_info in record_infos:
+                _ip_a_ptr_hosts.append(
+                    (ip, None, None,
+                     record_info.hostname,
+                     record_info.classname,
+                     record_info.room,
+                     record_info.comment
+                     )
+                )
 
             if _ip_a_ptr_hosts:
                 ip_a_ptr_hosts.extend(_ip_a_ptr_hosts)
             else:
-                ip_a_ptr_hosts.append((ip, None, None))
-
+                ip_a_ptr_hosts.append(
+                    (ip, None, None,
+                     None, None, None, None)
+                )
         return iter(ip_a_ptr_hosts)

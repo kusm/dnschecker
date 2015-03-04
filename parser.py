@@ -3,7 +3,7 @@
 
 import re
 import ipaddress
-from record import ARecord, PTRRecord
+from record import ARecord, PTRRecord, RecordInfo
 
 
 class RecordParserError(Exception):
@@ -143,6 +143,76 @@ class RecordParser:
         return ptr_records
 
 
+class RecordInfoParserError(Exception):
+    """
+    文字列がレコードの正規表現にマッチしないとき
+    に発生させるための例外
+    """
+    pass
+
+
+class RecordInfoParser:
+    """
+    A, PTR レコードを解析するクラス
+    """
+    def __init__(self):
+        # A レコードの正規表現
+        self.record_info_regex = re.compile(
+            r'^\s*(?P<ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s*\|'  # IP は必須
+            r'\s*(?P<hostname>[^\s|]*)\s*\|'  # ホスト名
+            r'(?P<classname>[^|]*)\|'  # クラス
+            r'(?P<room>[^|]*)\|'  # 部屋
+            r'(?P<comment>[^|]*)$'  # コメント
+        )
+
+        self.ignored_regexes = [
+            re.compile(regex)
+            for regex in [
+                r'^\s*#',
+                r'^\s*$'
+            ]
+        ]
+
+    def parse(self, record_info: str):
+        match = self.record_info_regex.search(record_info)
+        if match:
+            group = match.groupdict()
+            ip = group["ip"].strip()
+            hostname = group["hostname"].strip()
+            classname = group["classname"].strip()
+            room = group["room"].strip()
+            comment = group["comment"].strip()
+            return RecordInfo(
+                ip if ip else None,
+                hostname if hostname else None,
+                classname if classname else None,
+                room if room else None,
+                comment if comment else None
+            )
+        else:
+            raise RecordInfoParserError()
+
+    def is_ignored_line(self, line: str):
+        for ignored_regex in self.ignored_regexes:
+            if ignored_regex.search(line):
+                return True
+        return False
+
+    def parse_file(self, filename: str):
+        record_infos = []
+        with open(filename) as f:
+            for line in [_.strip() for _ in f]:
+                if self.is_ignored_line(line):
+                    continue
+                else:
+                    try:
+                        record_info = self.parse(line)
+                        record_infos.append(record_info)
+                    except RecordInfoParserError:
+                        pass
+        return record_infos
+
+
 def test_a_record_parser():
     parser = RecordParser()
     valid_a_record_answers = [
@@ -201,3 +271,65 @@ def test_ptr_record_parser():
             assert False
         except RecordParserError:
             pass
+
+
+def test_parse_file():
+    valid_record_infos = [
+        ("192.168.0.1|host1|HOST|100|テスト用",
+         RecordInfo(
+             "192.168.0.1",
+             "host1",
+             "HOST",
+             "100",
+             "テスト用"
+         )),
+        (" 192.168.0.1 | host1 | HOST | 100 | テスト用",
+         RecordInfo(
+             "192.168.0.1",
+             "host1",
+             "HOST",
+             "100",
+             "テスト用"
+         )),
+        ("192.168.0.1|||| だれかのPC  ",
+         RecordInfo(
+             "192.168.0.1",
+             "",
+             "",
+             "",
+             "だれかのPC"
+         )),
+        ("192.168.0.1||||",
+         RecordInfo(
+             "192.168.0.1",
+             "",
+             "",
+             "",
+             ""
+         )),
+    ]
+    invalid_record_infos = [
+        "|host1|HOST|100|テスト用",
+        " 192.168.0.1 | host1 | HOST | テスト用",
+    ]
+    ignored_lines = [
+        "#192.168.0.1 | | | |",
+        " # 192.168.0.1 | | | |",
+        "   ",
+        "",
+    ]
+
+    parser = RecordInfoParser()
+
+    for line, record_info in valid_record_infos:
+        assert parser.parse(line) == record_info
+
+    for line in invalid_record_infos:
+        try:
+            parser.parse(line)
+            assert False
+        except RecordInfoParserError:
+            pass
+
+    for line in ignored_lines:
+        assert parser.is_ignored_line(line)
