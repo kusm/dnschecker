@@ -52,7 +52,7 @@ class HTMLBuilder:
                 a_only=a_not_found,
                 ptr_only=ptr_not_found,
                 a_overlaped=[
-                    (hostname, [record.ip for record in records])
+                    (hostname, [record.ip_address for record in records])
                     for (hostname, records) in a_duplicated
                 ],
                 ptr_overlaped=[
