@@ -10,8 +10,11 @@ This module parses zones files which include A and PTR records.
 """
 
 import re
-import ipaddress
 from record import ARecord, PTRRecord, RecordInfo
+try:
+    import ipaddress
+except ImportError:
+    import ipaddr as ipaddress
 
 
 class RecordParserError(Exception):
