@@ -10,7 +10,10 @@ This module provides Network class.
 """
 
 
-import ipaddress
+try:
+    import ipaddress
+except ImportError:
+    import ipaddr as ipaddress
 from record import DNSRecord, ARecord, PTRRecord, RecordInfo
 
 
